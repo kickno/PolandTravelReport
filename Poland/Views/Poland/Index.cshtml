@@ -1,0 +1,304 @@
+﻿@model IEnumerable<sandbox.Models.Poland>
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/Review">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    @* <meta property="og:title" content="Another West -- Poland from Japanese eyes, living in U.S." />
+        <meta property="og:description" content="A Japanese Chopin fan, traveled alone to Warsaw for the first time" />
+        <meta name="description" content="A Japanese Chopin fan, traveled alone to Warsaw for the first time" />*@
+    <link href="/Content/Poland.css" rel="stylesheet" />
+    <link rel="shortcut icon" type="image/ico" href="/Content/Poland/favicon.ico">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
+    <link href="/Content/themes/base/jquery.ui.slider.css" rel="stylesheet" />
+    <link rel="image_src" href="http://riot.jp/Content/images/poland/marmaid.jpg" />
+    <meta itemprop="name" content="Another West -- Poland for Japanese, living in U.S">
+    <meta itemprop="description" content="Solo trip to Poland, for the 1st time in Summer 2014">
+    <meta itemprop="image" content="http://riot.jp/Content/images/poland/marmaid.jpg">
+    <title>Another West -- Poland for Japanese, living in U.S.</title>
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryui")
+    <script type="text/javascript">
+
+        $(function () {
+
+            var adjustOrientation = 3;
+            var nothorizenal = false;
+            if (window.innerHeight > window.innerWidth) {
+                nothorizenal = true;
+                adjustOrientation = adjustOrientation - 1; // user is horizental
+            }
+            var mythis = $('#holder a');
+            var offset = mythis.offset();
+
+            $.each($('.dropDiv'), function (i, el) {
+                var dh = $(el).outerHeight();
+                var dw = $(el).outerWidth();
+                var w = mythis.outerWidth() + 30 * i;
+
+                var initLeft = offset.left + ((w / 2) - (dw / 2));
+                var j = i
+                if (i > adjustOrientation) {
+                    if (nothorizenal) { //to do; make it logical
+                        if (i > 5) {
+                            j = j - 6;
+                            dh = dh - (dh * 2.3);
+                        }
+                        else {
+                            j = j - (adjustOrientation + 1);
+                            dh = dh - (dh * 1.15);
+                        }
+
+                    }
+                    else {
+                        j = j - (adjustOrientation + 1);
+                        dh = dh - (dh * 1.15);
+                    }
+                }
+                setTimeout(function () {
+                    $(el).css({
+                        left: initLeft + (j * dw),
+                        top: $(window).scrollTop() - dh,
+                        display: 'table'
+
+                    }).animate({
+                        left: initLeft + (j * dw),
+                        top: offset.top - dh,
+                    }, 2000, 'easeOutBounce');
+                }, 2000 + (i * 1500));
+
+            });
+
+            $("#audioplayer").prop("volume", 0.3);
+
+            $('#audioSlider').slider(
+                {
+                    orientation: "horizental",
+                    value: audioplayer.volume,
+                    min: 0,
+                    max: 1,
+                    range: 'min',
+                    animate: true,
+                    step: .1,
+                    slide: function (e, ui) {
+                        audioplayer.volume = ui.value;
+                    }
+                }
+            ); //audio slider end
+            $.fn.slideButton = function (options) {
+                // Settings
+                var settings = $.extend({
+                    slideSpeed: 8,
+                    revertSpeed: 3,
+                    labelWidth: 30
+                }, options);
+
+                this.each(function () {
+                    var container = $(this);
+                    var label = container.children('label');
+                    var input = container.children(':radio');
+                    var maxWidth = 0;
+
+                    if (label.length != 2 || input.length != 2) {
+                        throw new Error("The container must contain two radio buttons and two labels");
+                    }
+
+                    // move() does the animation associated with
+                    // state changing for the button
+                    function move(direction, speed) {
+                        var amount = direction === 'right' ? halfWidth : -1;
+                        var duration = (direction === 'right' ? halfWidth - handle.position().left : handle.position().left) * speed;
+
+                        handle.animate({
+                            left: amount
+                        }, duration);
+
+                        input.eq(direction === 'right' ? 0 : 1).attr('checked', true);
+                    }
+
+                    // Handles changing by checking current state
+                    function updateState() {
+                        move(handle.hasClass('jp') ? 'right' : 'left', settings.slideSpeed);
+                        handle.toggleClass('jp');
+                        return false;
+                    }
+
+                    // Reverts position - think of this as
+                    // the opposite of updateState()
+                    function revert() {
+                        move(handle.hasClass('jp') ? 'left' : 'right', settings.revertSpeed);
+                        return false;
+                    }
+
+                    // Adding classes and hiding input elements
+                    container.addClass('ui-sbutton-container ui-corner-all');
+                    input.addClass('ui-helper-hidden-accessible');
+                    label.addClass('ui-sbutton-label');
+
+                    // Setting label widths - if none set,
+                    // then loop through all of them and use the biggest
+                    if (settings.labelWidth) {
+                        maxWidth = settings.labelWidth;
+                    } else {
+                        label.each(function () {
+                            var w = $(this).outerWidth();
+                            if (w > maxWidth) {
+                                maxWidth = w;
+                            }
+                        });
+                    }
+
+                    // Padding was useful for finding largest width,
+                    // but will now interfere when setting explicit widths
+                    label.width(maxWidth).css({
+                        'padding-left': 0,
+                        'padding-right': 0
+                    });
+
+                    // Getting all important half width for later use
+                    var halfWidth = (container.outerWidth() / 2);
+
+                    // Very messy chain that does element creation,
+                    // insertion and event handling all at once
+                    var handle = $('<a />')
+                    .addClass('ui-sbutton-handle  ui-corner-all').hover(function () {
+                        $(this).toggleClass('ui-sbutton-active');
+                    }).dblclick(function () {
+                        updateState();
+                        return false;
+                    }).appendTo(container).width(maxWidth - 1).draggable({
+                        containment: 'parent',
+                        axis: 'x',
+                        stop: function (event, ui) {
+                            var left = $(this).position().left;
+                            if ((left > (halfWidth - 1) / 2 && handle.hasClass('jp')) || (left < (halfWidth / 2 - 1) && !handle.hasClass('jp'))) {
+                                updateState();
+                            } else {
+                                revert();
+                            }
+                        }
+                    });
+
+                    // Set up initial state of the button
+                    if (input.first().is(':checked')) {
+                        move('right', 0);
+                    } else {
+                        handle.addClass('jp');
+                    }
+                });
+
+                return this;
+            };
+            $('.slideButton').slideButton();
+            /////http://jsfiddle.net/RDkBL/7/
+
+            $('a[id^="dateClick"]').click(function () {
+                var num = $(this).attr("id");
+                var lastChar = num[num.length - 1];
+                var checked = $('#lang-on').prop("checked");
+                if (checked) {
+                    $(this).attr("href", "#po" + lastChar + "j");
+                }
+                else {
+                    $(this).attr("href", "#po" + lastChar);
+                }
+
+            });
+        });
+    </script>
+    <script async>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script>
+
+</head>
+<body>
+    <div id="header">
+        <div class="volume">
+            <img id="volume" src="~/Content/images/volume.jpg" /><div id="audioSlider"></div>
+        </div>
+        <div class="slideButton">
+            <input type="radio" id="lang-on" value="jp" name="lang" /><label for="lang-on"><img src="/Content/images/poland/jp16.jpg" alt="JP" /></label>
+            <input type="radio" id="lang-off" value="en" name="lang" /><label for="lang-off"><img src="/Content/images/poland/us16.jpg" alt="EN" /></label>
+        </div>
+        <audio id="audioplayer" autoplay>
+            <source src="/Content/audio/20130512_67-4&33-2_2.mp3" type="audio/mpeg" />
+        </audio>
+    </div>
+
+    <div id="title">"Another West": Solo trip to Poland, for the 1st time in Summer 2014</div>
+    <div id="carpet">
+        @foreach (var item in Model)
+        {
+            <div class="dropDiv" style="background: @item.Color">
+                <span class="date">
+                    <a href="" id="dateClick@(item.ID)">@item.Date</a>
+                </span>
+            </div>
+        }
+        <div id="holder"><a href="javascript:void(0);" id="main"></a></div>
+
+        <div id="footer">
+            Music: Mazurka #67-4 and #33-2 by Fryderyk Chopin; Image/Video taken Żelazowa Wola, Chopin's birth place; <br />Piano learner:
+            <script async type="text/javascript" language="javascript">
+<!--
+// Email obfuscator script 2.1 by Tim Williams, University of Arizona
+// Random encryption key feature by Andrew Moulden, Site Engineering Ltd
+// This code is freeware provided these four comment lines remain intact
+// A wizard to generate this code is at http://www.jottings.com/obfuscator/
+{ coded = "hzMXcK8XmS@9kKXR.HSk"
+  key = "DazBNwGhbo0LIgc58pdrPKAleYJxTSiCj9HF13mUvVyRu2qWtfX7MZE6sOk4nQ"
+  shift=coded.length
+  link=""
+  for (i=0; i<coded.length; i++) {
+    if (key.indexOf(coded.charAt(i))==-1) {
+      ltr = coded.charAt(i)
+      link += (ltr)
+    }
+    else {
+      ltr = (key.indexOf(coded.charAt(i))-shift+key.length) % key.length
+      link += (key.charAt(ltr))
+    }
+  }
+document.write("<a href='mailto:"+link+"'>Kickno</a>")
+}
+//-->
+            </script><noscript>Sorry, you need Javascript on to email me.</noscript>
+            the webmaster
+            <br />
+            <a href="https://plus.google.com/share?url=http://riot.jp/poland" onclick="javascript:window.open(this.href,
+                '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;">
+                <img src="https://www.gstatic.com/images/icons/gplus-16.png" alt="Share on Google+" />
+            </a>
+            <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://riot.jp/poland" data-via="kickno" data-hashtags="WarsawSightSeeing">Tweet</a>
+            <script async>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script>
+            &nbsp; This webpage template is free to use. Will be available at Github soon.
+        </div>
+    </div>
+    @*<video autoplay poster="~/Content/images/chopin.jpg" id="bgvid">
+            <source src="~/Content/audio/background_chopin.webm" type="video/webm" />
+            <source src="~/Content/audio/background_chopin.mp4" type="video/mp4" />
+            <source src="~/Content/audio/background_chopin.ogv" type="video/ogg" />
+            <source src="~/Content/audio/background_chopin.3gp" type="video/3gp" />
+        </video>*@
+
+    @foreach (var item in Model)
+    {
+        <a href="#x" class="overlay" id="po@(item.ID)"></a>
+        <div class="popup">
+            <div class="popupInner">
+                @Html.Raw(File.ReadAllText(Server.MapPath("~/Content/Poland/" + @item.ID + ".html")))
+                <a class="close" href="#close"></a>
+            </div>
+        </div>
+        <a href="#x" class="overlay" id="po@(item.ID)j"></a>
+        <div class="popup">
+            <div class="popupInner">
+                @Html.Raw(File.ReadAllText(Server.MapPath("~/Content/Poland/" + @item.ID + "j.html")))
+                <a class="close" href="#close"></a>
+            </div>
+        </div>
+    }
+</body>
+</html>l>
